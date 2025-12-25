@@ -7,7 +7,7 @@ on:
       - 'e2e/**'
       - 'go.mod'
       - 'go.sum'
-      - '.github/workflows/inspect-code.yaml'
+      - '.github/workflows/inspect-code.yml'
   workflow_dispatch:
 
 jobs:
