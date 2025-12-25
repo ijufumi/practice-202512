@@ -65,6 +65,10 @@ test:
 test-e2e:
 	go test -v ./e2e/...
 
+# CI用ビルドコマンド
+ci-build:
+	go build -v ./...
+
 # ヘルプ
 help:
 	@echo "使用可能なコマンド:"
@@ -89,6 +93,8 @@ help:
 	@echo "【テスト関連】"
 	@echo "  make test             - 単体テスト実行（e2e以外）"
 	@echo "  make test-e2e         - E2Eテスト実行"
+	@echo "【CI関連】"
+	@echo "  make ci-build         - CI用ビルド"
 	@echo ""
 	@echo "【その他】"
 	@echo "  make help             - このヘルプを表示"
