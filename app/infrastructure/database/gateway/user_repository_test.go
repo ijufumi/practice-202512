@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/ijufumi/practice-202512/app/domain/models"
-	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -15,7 +15,7 @@ func setupTestDB(t *testing.T) *gorm.DB {
 	assert.NoError(t, err)
 
 	// マイグレーション
-	err = db.AutoMigrate(&dao.Company{}, &dao.User{})
+	err = db.AutoMigrate(&entities.Company{}, &entities.User{})
 	assert.NoError(t, err)
 
 	return db
@@ -26,7 +26,7 @@ func TestUserRepository_Create(t *testing.T) {
 	repo := NewUserRepository()
 
 	// テストデータ準備
-	company := &dao.Company{
+	company := &entities.Company{
 		ID:            "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
 		CorporateName: "Test Company",
 	}
@@ -80,14 +80,14 @@ func TestUserRepository_FindByID(t *testing.T) {
 	repo := NewUserRepository()
 
 	// テストデータ準備
-	company := &dao.Company{
+	company := &entities.Company{
 		ID:            "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
 		CorporateName: "Test Company",
 	}
 	err := db.Create(company).Error
 	assert.NoError(t, err)
 
-	testUser := &dao.User{
+	testUser := &entities.User{
 		ID:        "01HQZXFG0PJ9K8QXW7YM1N2ZXD",
 		CompanyID: company.ID,
 		Name:      "Find Test User",
@@ -124,14 +124,14 @@ func TestUserRepository_FindByEmail(t *testing.T) {
 	repo := NewUserRepository()
 
 	// テストデータ準備
-	company := &dao.Company{
+	company := &entities.Company{
 		ID:            "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
 		CorporateName: "Test Company",
 	}
 	err := db.Create(company).Error
 	assert.NoError(t, err)
 
-	testUser := &dao.User{
+	testUser := &entities.User{
 		ID:        "01HQZXFG0PJ9K8QXW7YM1N2ZXE",
 		CompanyID: company.ID,
 		Name:      "Email Test User",

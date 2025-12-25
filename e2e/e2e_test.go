@@ -19,7 +19,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
 )
 
 func setupTestDB(t *testing.T) *gorm.DB {
@@ -28,11 +28,11 @@ func setupTestDB(t *testing.T) *gorm.DB {
 
 	// マイグレーション
 	err = db.AutoMigrate(
-		&dao.Company{},
-		&dao.User{},
-		&dao.Client{},
-		&dao.ClientBankAccount{},
-		&dao.Invoice{},
+		&entities.Company{},
+		&entities.User{},
+		&entities.Client{},
+		&entities.ClientBankAccount{},
+		&entities.Invoice{},
 	)
 	assert.NoError(t, err)
 

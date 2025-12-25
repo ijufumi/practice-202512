@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
 
 	"time"
 )
@@ -17,8 +17,8 @@ type ClientBankAccount struct {
 	UpdatedAt     time.Time
 }
 
-func (c *ClientBankAccount) ToDAO() *dao.ClientBankAccount {
-	return &dao.ClientBankAccount{
+func (c *ClientBankAccount) ToDAO() *entities.ClientBankAccount {
+	return &entities.ClientBankAccount{
 		ID:            c.ID,
 		ClientID:      c.ClientID,
 		BankName:      c.BankName,
@@ -30,7 +30,7 @@ func (c *ClientBankAccount) ToDAO() *dao.ClientBankAccount {
 	}
 }
 
-func ClientBankAccountFromDAO(daoAccount *dao.ClientBankAccount) *ClientBankAccount {
+func ClientBankAccountFromDAO(daoAccount *entities.ClientBankAccount) *ClientBankAccount {
 	return &ClientBankAccount{
 		ID:            daoAccount.ID,
 		ClientID:      daoAccount.ClientID,

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
 
 	"time"
 )
@@ -16,8 +16,8 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-func (u *User) ToDAO() *dao.User {
-	return &dao.User{
+func (u *User) ToDAO() *entities.User {
+	return &entities.User{
 		ID:        u.ID,
 		CompanyID: u.CompanyID,
 		Name:      u.Name,
@@ -28,7 +28,7 @@ func (u *User) ToDAO() *dao.User {
 	}
 }
 
-func UserFromDAO(daoUser *dao.User) *User {
+func UserFromDAO(daoUser *entities.User) *User {
 	return &User{
 		ID:        daoUser.ID,
 		CompanyID: daoUser.CompanyID,

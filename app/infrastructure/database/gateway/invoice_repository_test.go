@@ -6,7 +6,7 @@ import (
 
 	"github.com/ijufumi/practice-202512/app/domain/models"
 	"github.com/ijufumi/practice-202512/app/domain/value"
-	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
@@ -18,7 +18,7 @@ func setupInvoiceTestDB(t *testing.T) *gorm.DB {
 	assert.NoError(t, err)
 
 	// マイグレーション
-	err = db.AutoMigrate(&dao.Client{}, &dao.Invoice{})
+	err = db.AutoMigrate(&entities.Client{}, &entities.Invoice{})
 	assert.NoError(t, err)
 
 	return db
@@ -29,13 +29,13 @@ func TestInvoiceRepository_Create(t *testing.T) {
 	repo := NewInvoiceRepository()
 
 	// テストデータ準備
-	company := &dao.Company{
+	company := &entities.Company{
 		ID:            "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
 		CorporateName: "Test Company",
 	}
 	err := db.Create(company).Error
 	assert.NoError(t, err)
-	client := &dao.Client{
+	client := &entities.Client{
 		ID:                 "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
 		CompanyID:          company.ID,
 		CorporateName:      "Test Client",
@@ -78,13 +78,13 @@ func TestInvoiceRepository_FindByPaymentDueDateRange(t *testing.T) {
 	repo := NewInvoiceRepository()
 
 	// テストデータ準備
-	company := &dao.Company{
+	company := &entities.Company{
 		ID:            "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
 		CorporateName: "Test Company",
 	}
 	err := db.Create(company).Error
 	assert.NoError(t, err)
-	client := &dao.Client{
+	client := &entities.Client{
 		ID:                 "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
 		CompanyID:          company.ID,
 		CorporateName:      "Test Client",
@@ -97,7 +97,7 @@ func TestInvoiceRepository_FindByPaymentDueDateRange(t *testing.T) {
 	assert.NoError(t, err)
 
 	// 複数の請求書を作成
-	invoices := []*dao.Invoice{
+	invoices := []*entities.Invoice{
 		{
 			ID:             "01HQZXFG0PJ9K8QXW7YM1N2ZXD",
 			CompanyID:      company.ID,

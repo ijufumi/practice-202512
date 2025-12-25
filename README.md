@@ -59,12 +59,12 @@ practice-202512/
 │   ├── infrastructure/                  # インフラ層（DB実装・外部依存）
 │   │   └── database/                    # データベース関連
 │   │       ├── connection.go            # GORM データベース接続
-│   │       ├── dao/                     # データアクセスオブジェクト
-│   │       │   ├── user.go              # User DAO
-│   │       │   ├── company.go           # Company DAO
-│   │       │   ├── client.go            # Client DAO
-│   │       │   ├── client_bank_account.go  # ClientBankAccount DAO
-│   │       │   └── invoice.go           # Invoice DAO
+│   │       ├── entities/                # データベースエンティティ
+│   │       │   ├── user.go              # User Entity
+│   │       │   ├── company.go           # Company Entit
+│   │       │   ├── client.go            # Client Entit
+│   │       │   ├── client_bank_account.go  # ClientBankAccount Entit
+│   │       │   └── invoice.go           # Invoice Entit
 │   │       │
 │   │       └── gateway/                 # リポジトリ実装
 │   │           ├── user_repository.go   # UserRepository のGORM実装
@@ -115,7 +115,7 @@ practice-202512/
    - `value/`: 値オブジェクト定義
 2. **usecase層**: アプリケーションのビジネスロジックを実装。domainに依存。
 3. **infrastructure層**: データベースや外部APIなどの実装。domainに依存。
-   - `database/dao/`: GORMを使用したデータアクセスオブジェクト
+   - `database/entities/`: GORMを使用したエンティティオブジェクト
    - `database/gateway/`: リポジトリインターフェースの実装
 4. **presentation層**: HTTPハンドラーやルーター。usecaseに依存。
    - `handler/`: HTTPリクエストハンドラー

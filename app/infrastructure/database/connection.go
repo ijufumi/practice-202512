@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ijufumi/practice-202512/app/config"
-	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -31,11 +31,11 @@ func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 
 	// マイグレーション
 	if err := db.AutoMigrate(
-		&dao.Company{},
-		&dao.User{},
-		&dao.Client{},
-		&dao.ClientBankAccount{},
-		&dao.Invoice{},
+		&entities.Company{},
+		&entities.User{},
+		&entities.Client{},
+		&entities.ClientBankAccount{},
+		&entities.Invoice{},
 	); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}

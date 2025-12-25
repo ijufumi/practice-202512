@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/ijufumi/practice-202512/app/domain/models"
-	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -15,7 +15,7 @@ func setupCompanyTestDB(t *testing.T) *gorm.DB {
 	assert.NoError(t, err)
 
 	// マイグレーション
-	err = db.AutoMigrate(&dao.Company{})
+	err = db.AutoMigrate(&entities.Company{})
 	assert.NoError(t, err)
 
 	return db
@@ -50,7 +50,7 @@ func TestCompanyRepository_FindByID(t *testing.T) {
 	repo := NewCompanyRepository()
 
 	// テストデータ準備
-	testCompany := &dao.Company{
+	testCompany := &entities.Company{
 		ID:                 "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
 		CorporateName:      "Find Test Corporation",
 		RepresentativeName: "Find Test Representative",

@@ -3,7 +3,7 @@ package gateway
 import (
 	"github.com/ijufumi/practice-202512/app/domain/models"
 	"github.com/ijufumi/practice-202512/app/domain/repository"
-	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
 
 	"gorm.io/gorm"
 )
@@ -26,7 +26,7 @@ func (r *clientRepository) Create(db *gorm.DB, client *models.Client) error {
 }
 
 func (r *clientRepository) FindByID(db *gorm.DB, id string) (*models.Client, error) {
-	var daoClient dao.Client
+	var daoClient entities.Client
 	if err := db.First(&daoClient, "id = ?", id).Error; err != nil {
 		return nil, err
 	}

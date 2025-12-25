@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/ijufumi/practice-202512/app/domain/value"
-	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
 	"github.com/shopspring/decimal"
 
 	"time"
@@ -25,8 +25,8 @@ type Invoice struct {
 	UpdatedAt      time.Time
 }
 
-func (i *Invoice) ToDAO() *dao.Invoice {
-	return &dao.Invoice{
+func (i *Invoice) ToDAO() *entities.Invoice {
+	return &entities.Invoice{
 		ID:             i.ID,
 		CompanyID:      i.CompanyID,
 		ClientID:       i.ClientID,
@@ -44,7 +44,7 @@ func (i *Invoice) ToDAO() *dao.Invoice {
 	}
 }
 
-func InvoiceFromDAO(daoInvoice *dao.Invoice) *Invoice {
+func InvoiceFromDAO(daoInvoice *entities.Invoice) *Invoice {
 	return &Invoice{
 		ID:             daoInvoice.ID,
 		CompanyID:      daoInvoice.CompanyID,
