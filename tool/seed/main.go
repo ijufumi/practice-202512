@@ -9,6 +9,7 @@ import (
 	"github.com/ijufumi/practice-202512/app/domain/value"
 	"github.com/ijufumi/practice-202512/app/infrastructure/database"
 	"github.com/ijufumi/practice-202512/app/infrastructure/database/gateway"
+	"github.com/shopspring/decimal"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -79,13 +80,13 @@ func main() {
 			CompanyID:      company.ID,
 			ClientID:       client.ID,
 			IssueDate:      time.Date(2025, 1, 1, 0, 0, 0, 0, time.Local),
-			PaymentAmount:  10000,
+			PaymentAmount:  decimal.NewFromInt(10000),
 			PaymentDueDate: time.Date(2025, 2, 1, 0, 0, 0, 0, time.Local),
-			Fee:            1000,
-			FeeRate:        0.01,
-			Tax:            1000,
-			TaxRate:        0.01,
-			InvoiceAmount:  10000,
+			Fee:            decimal.NewFromInt(1000),
+			FeeRate:        decimal.NewFromFloat(0.01),
+			Tax:            decimal.NewFromInt(1000),
+			TaxRate:        decimal.NewFromFloat(0.01),
+			InvoiceAmount:  decimal.NewFromInt(10000),
 			Status:         value.InvoiceStatusProcessed,
 		}
 		if err := invoiceRepository.Create(tx, invoice); err != nil {

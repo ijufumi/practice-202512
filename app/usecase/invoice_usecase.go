@@ -4,30 +4,34 @@ import (
 	"context"
 	"time"
 
+	"github.com/ijufumi/practice-202512/app/config"
 	"github.com/ijufumi/practice-202512/app/domain/models"
 	"github.com/ijufumi/practice-202512/app/domain/repository"
 	"github.com/ijufumi/practice-202512/app/domain/value"
 	"github.com/ijufumi/practice-202512/app/util"
+	"github.com/shopspring/decimal"
 )
 
 type InvoiceUsecase interface {
-	CreateInvoice(ctx context.Context, clientID string, issueDate time.Time, paymentAmount int, paymentDueDate time.Time) (*models.Invoice, error)
+	CreateInvoice(ctx context.Context, clientID string, issueDate time.Time, paymentAmount decimal.Decimal, paymentDueDate time.Time) (*models.Invoice, error)
 	GetInvoicesByPaymentDueDateRange(ctx context.Context, startDate, endDate *time.Time, offset, limit int) ([]*models.Invoice, error)
 }
 
 type invoiceUsecase struct {
 	invoiceRepository repository.InvoiceRepository
 	userRepository    repository.UserRepository
+	config            *config.Config
 }
 
 func NewInvoiceUsecase(invoiceRepository repository.InvoiceRepository, userRepository repository.UserRepository) InvoiceUsecase {
 	return &invoiceUsecase{
 		invoiceRepository: invoiceRepository,
 		userRepository:    userRepository,
+		config:            config.Load(),
 	}
 }
 
-func (u *invoiceUsecase) CreateInvoice(ctx context.Context, clientID string, issueDate time.Time, paymentAmount int, paymentDueDate time.Time) (*models.Invoice, error) {
+func (u *invoiceUsecase) CreateInvoice(ctx context.Context, clientID string, issueDate time.Time, paymentAmount decimal.Decimal, paymentDueDate time.Time) (*models.Invoice, error) {
 	db, err := util.GetDB(ctx)
 	if err != nil {
 		return nil, err
@@ -42,32 +46,19 @@ func (u *invoiceUsecase) CreateInvoice(ctx context.Context, clientID string, iss
 		return nil, err
 	}
 
-	// 手数料率と消費税率の定義
-	const feeRate = 0.04
-	const taxRate = 0.10
-
-	// 手数料計算: 支払金額 * 4%
-	fee := int(float64(paymentAmount) * feeRate)
-
-	// 消費税計算: 手数料 * 10%
-	tax := int(float64(fee) * taxRate)
-
-	// 請求金額計算: 支払金額 + 手数料 + 消費税
-	invoiceAmount := paymentAmount + fee + tax
-
 	invoice := &models.Invoice{
 		CompanyID:      user.CompanyID,
 		ClientID:       clientID,
 		IssueDate:      issueDate,
 		PaymentAmount:  paymentAmount,
-		Fee:            fee,
-		FeeRate:        feeRate,
-		Tax:            tax,
-		TaxRate:        taxRate,
-		InvoiceAmount:  invoiceAmount,
 		PaymentDueDate: paymentDueDate,
 		Status:         value.InvoiceStatusUnprocessed,
 	}
+
+	// domain/models の計算メソッドを使用
+	invoice.CalculateFee(u.config.FeeRate)
+	invoice.CalculateTax(u.config.TaxRate)
+	invoice.CalculateInvoiceAmount()
 
 	if err := u.invoiceRepository.Create(db, invoice); err != nil {
 		return nil, err

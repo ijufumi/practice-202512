@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/ijufumi/practice-202512/app/domain/value"
 	"github.com/ijufumi/practice-202512/app/infrastructure/database/dao"
+	"github.com/shopspring/decimal"
 
 	"time"
 )
@@ -12,12 +13,12 @@ type Invoice struct {
 	CompanyID      string
 	ClientID       string
 	IssueDate      time.Time
-	PaymentAmount  int
-	Fee            int
-	FeeRate        float64
-	Tax            int
-	TaxRate        float64
-	InvoiceAmount  int
+	PaymentAmount  decimal.Decimal
+	Fee            decimal.Decimal
+	FeeRate        decimal.Decimal
+	Tax            decimal.Decimal
+	TaxRate        decimal.Decimal
+	InvoiceAmount  decimal.Decimal
 	PaymentDueDate time.Time
 	Status         value.InvoiceStatus
 	CreatedAt      time.Time
@@ -60,4 +61,21 @@ func InvoiceFromDAO(daoInvoice *dao.Invoice) *Invoice {
 		CreatedAt:      daoInvoice.CreatedAt,
 		UpdatedAt:      daoInvoice.UpdatedAt,
 	}
+}
+
+// CalculateFee は支払金額に対する手数料を計算します
+func (i *Invoice) CalculateFee(feeRate decimal.Decimal) {
+	i.Fee = i.PaymentAmount.Mul(feeRate).Truncate(0)
+	i.FeeRate = feeRate
+}
+
+// CalculateTax は手数料に対する消費税を計算します
+func (i *Invoice) CalculateTax(taxRate decimal.Decimal) {
+	i.Tax = i.Fee.Mul(taxRate).Truncate(0)
+	i.TaxRate = taxRate
+}
+
+// CalculateInvoiceAmount は請求金額を計算します（支払金額 + 手数料 + 消費税）
+func (i *Invoice) CalculateInvoiceAmount() {
+	i.InvoiceAmount = i.PaymentAmount.Add(i.Fee).Add(i.Tax)
 }

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/ijufumi/practice-202512/app/domain/models"
+	"github.com/shopspring/decimal"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -40,7 +41,7 @@ func (_m *MockInvoiceUsecase) EXPECT() *MockInvoiceUsecase_Expecter {
 }
 
 // CreateInvoice provides a mock function for the type MockInvoiceUsecase
-func (_mock *MockInvoiceUsecase) CreateInvoice(ctx context.Context, clientID string, issueDate time.Time, paymentAmount int, paymentDueDate time.Time) (*models.Invoice, error) {
+func (_mock *MockInvoiceUsecase) CreateInvoice(ctx context.Context, clientID string, issueDate time.Time, paymentAmount decimal.Decimal, paymentDueDate time.Time) (*models.Invoice, error) {
 	ret := _mock.Called(ctx, clientID, issueDate, paymentAmount, paymentDueDate)
 
 	if len(ret) == 0 {
@@ -49,17 +50,17 @@ func (_mock *MockInvoiceUsecase) CreateInvoice(ctx context.Context, clientID str
 
 	var r0 *models.Invoice
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string, time.Time, int, time.Time) (*models.Invoice, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, time.Time, decimal.Decimal, time.Time) (*models.Invoice, error)); ok {
 		return returnFunc(ctx, clientID, issueDate, paymentAmount, paymentDueDate)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string, time.Time, int, time.Time) *models.Invoice); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, time.Time, decimal.Decimal, time.Time) *models.Invoice); ok {
 		r0 = returnFunc(ctx, clientID, issueDate, paymentAmount, paymentDueDate)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.Invoice)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, string, time.Time, int, time.Time) error); ok {
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, time.Time, decimal.Decimal, time.Time) error); ok {
 		r1 = returnFunc(ctx, clientID, issueDate, paymentAmount, paymentDueDate)
 	} else {
 		r1 = ret.Error(1)
@@ -76,13 +77,13 @@ type MockInvoiceUsecase_CreateInvoice_Call struct {
 //   - ctx context.Context
 //   - clientID string
 //   - issueDate time.Time
-//   - paymentAmount int
+//   - paymentAmount decimal.Decimal
 //   - paymentDueDate time.Time
 func (_e *MockInvoiceUsecase_Expecter) CreateInvoice(ctx interface{}, clientID interface{}, issueDate interface{}, paymentAmount interface{}, paymentDueDate interface{}) *MockInvoiceUsecase_CreateInvoice_Call {
 	return &MockInvoiceUsecase_CreateInvoice_Call{Call: _e.mock.On("CreateInvoice", ctx, clientID, issueDate, paymentAmount, paymentDueDate)}
 }
 
-func (_c *MockInvoiceUsecase_CreateInvoice_Call) Run(run func(ctx context.Context, clientID string, issueDate time.Time, paymentAmount int, paymentDueDate time.Time)) *MockInvoiceUsecase_CreateInvoice_Call {
+func (_c *MockInvoiceUsecase_CreateInvoice_Call) Run(run func(ctx context.Context, clientID string, issueDate time.Time, paymentAmount decimal.Decimal, paymentDueDate time.Time)) *MockInvoiceUsecase_CreateInvoice_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -96,9 +97,9 @@ func (_c *MockInvoiceUsecase_CreateInvoice_Call) Run(run func(ctx context.Contex
 		if args[2] != nil {
 			arg2 = args[2].(time.Time)
 		}
-		var arg3 int
+		var arg3 decimal.Decimal
 		if args[3] != nil {
-			arg3 = args[3].(int)
+			arg3 = args[3].(decimal.Decimal)
 		}
 		var arg4 time.Time
 		if args[4] != nil {
@@ -120,7 +121,7 @@ func (_c *MockInvoiceUsecase_CreateInvoice_Call) Return(invoice *models.Invoice,
 	return _c
 }
 
-func (_c *MockInvoiceUsecase_CreateInvoice_Call) RunAndReturn(run func(ctx context.Context, clientID string, issueDate time.Time, paymentAmount int, paymentDueDate time.Time) (*models.Invoice, error)) *MockInvoiceUsecase_CreateInvoice_Call {
+func (_c *MockInvoiceUsecase_CreateInvoice_Call) RunAndReturn(run func(ctx context.Context, clientID string, issueDate time.Time, paymentAmount decimal.Decimal, paymentDueDate time.Time) (*models.Invoice, error)) *MockInvoiceUsecase_CreateInvoice_Call {
 	_c.Call.Return(run)
 	return _c
 }

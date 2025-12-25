@@ -13,6 +13,7 @@ import (
 	"github.com/ijufumi/practice-202512/app/domain/value"
 	usecase "github.com/ijufumi/practice-202512/app/usecase/mocks"
 	"github.com/labstack/echo/v4"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -24,7 +25,7 @@ func TestInvoiceHandler_CreateInvoice(t *testing.T) {
 
 		clientID := "01HQZXFG0PJ9K8QXW7YM1N2ZXC"
 		issueDate := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
-		paymentAmount := 100000
+		paymentAmount := decimal.NewFromInt(100000)
 		paymentDueDate := time.Date(2025, 2, 1, 0, 0, 0, 0, time.UTC)
 
 		expectedInvoice := &models.Invoice{
@@ -32,11 +33,11 @@ func TestInvoiceHandler_CreateInvoice(t *testing.T) {
 			ClientID:       clientID,
 			IssueDate:      issueDate,
 			PaymentAmount:  paymentAmount,
-			Fee:            4000,
-			FeeRate:        0.04,
-			Tax:            400,
-			TaxRate:        0.10,
-			InvoiceAmount:  104400,
+			Fee:            decimal.NewFromInt(4000),
+			FeeRate:        decimal.NewFromFloat(0.04),
+			Tax:            decimal.NewFromInt(400),
+			TaxRate:        decimal.NewFromFloat(0.10),
+			InvoiceAmount:  decimal.NewFromInt(104400),
 			PaymentDueDate: paymentDueDate,
 			Status:         value.InvoiceStatusUnprocessed,
 			CreatedAt:      time.Now(),
@@ -73,8 +74,8 @@ func TestInvoiceHandler_CreateInvoice(t *testing.T) {
 		err = json.Unmarshal(rec.Body.Bytes(), &response)
 		assert.NoError(t, err)
 		assert.Equal(t, expectedInvoice.ID, response["id"])
-		assert.Equal(t, float64(expectedInvoice.PaymentAmount), response["payment_amount"])
-		assert.Equal(t, float64(expectedInvoice.InvoiceAmount), response["invoice_amount"])
+		assert.Equal(t, expectedInvoice.PaymentAmount.String(), response["payment_amount"])
+		assert.Equal(t, expectedInvoice.InvoiceAmount.String(), response["invoice_amount"])
 	})
 
 	t.Run("不正なリクエストボディ", func(t *testing.T) {
@@ -124,7 +125,7 @@ func TestInvoiceHandler_CreateInvoice(t *testing.T) {
 		reqBody := `{
 			"client_id": "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
 			"issue_date": "2025-01-01",
-			"payment_amount": 0,
+			"payment_amount": "*",
 			"payment_due_date": "2025-02-01"
 		}`
 		req := httptest.NewRequest(http.MethodPost, "/invoices", strings.NewReader(reqBody))
@@ -230,13 +231,13 @@ func TestInvoiceHandler_GetInvoices(t *testing.T) {
 			{
 				ID:             "01HQZXFG0PJ9K8QXW7YM1N2ZXD",
 				ClientID:       "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
-				PaymentAmount:  100000,
+				PaymentAmount:  decimal.NewFromInt(100000),
 				PaymentDueDate: time.Date(2025, 2, 1, 0, 0, 0, 0, time.UTC),
 			},
 			{
 				ID:             "01HQZXFG0PJ9K8QXW7YM1N2ZXE",
 				ClientID:       "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
-				PaymentAmount:  200000,
+				PaymentAmount:  decimal.NewFromInt(200000),
 				PaymentDueDate: time.Date(2025, 3, 1, 0, 0, 0, 0, time.UTC),
 			},
 		}

@@ -294,12 +294,12 @@ curl -X POST http://localhost:8080/api/invoices \
   "id": "01HQZXFG0PJ9K8QXW7YM1N2ZXD",
   "client_id": "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
   "issue_date": "2025-01-01T00:00:00Z",
-  "payment_amount": 100000,
-  "fee": 4000,
-  "fee_rate": 0.04,
-  "tax": 400,
-  "tax_rate": 0.10,
-  "invoice_amount": 104400,
+  "payment_amount": "100000",
+  "fee": "4000",
+  "fee_rate": "0.04",
+  "tax": "400",
+  "tax_rate": "0.10",
+  "invoice_amount": "104400",
   "payment_due_date": "2025-02-01T00:00:00Z",
   "status": "未処理",
   "created_at": "2025-12-21T10:00:00Z",
@@ -345,12 +345,12 @@ curl -X GET "http://localhost:8080/api/invoices?start_date=2025-01-01&end_date=2
     "id": "01HQZXFG0PJ9K8QXW7YM1N2ZXD",
     "client_id": "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
     "issue_date": "2025-01-01T00:00:00Z",
-    "payment_amount": 100000,
-    "fee": 4000,
-    "fee_rate": 0.04,
-    "tax": 400,
-    "tax_rate": 0.10,
-    "invoice_amount": 104400,
+    "payment_amount": "100000",
+    "fee": "4000",
+    "fee_rate": "0.04",
+    "tax": "400",
+    "tax_rate": "0.10",
+    "invoice_amount": "104400",
     "payment_due_date": "2025-02-01T00:00:00Z",
     "status": "unprocessed",
     "created_at": "2025-12-21T10:00:00Z",
@@ -416,12 +416,12 @@ erDiagram
         char(26) id PK "ULID"
         char(26) client_id FK "取引先ID"
         date issue_date "発行日"
-        int payment_amount "支払金額"
-        int fee "手数料"
+        decimal payment_amount "支払金額"
+        decimal fee "手数料"
         decimal fee_rate "手数料率"
-        int tax "消費税"
+        decimal tax "消費税"
         decimal tax_rate "消費税率"
-        int invoice_amount "請求金額"
+        decimal invoice_amount "請求金額"
         date payment_due_date "支払期日"
         varchar(20) status "ステータス"
         timestamp created_at "作成日時"

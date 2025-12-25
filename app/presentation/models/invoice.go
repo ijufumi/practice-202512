@@ -3,26 +3,28 @@ package models
 import (
 	domainModel "github.com/ijufumi/practice-202512/app/domain/models"
 	"github.com/ijufumi/practice-202512/app/domain/value"
+	"github.com/shopspring/decimal"
+
 	"time"
 )
 
 type CreateInvoiceRequest struct {
-	ClientID       string `json:"client_id" validate:"required"`
-	IssueDate      string `json:"issue_date" validate:"required"`
-	PaymentAmount  int    `json:"payment_amount" validate:"required,min=1"`
-	PaymentDueDate string `json:"payment_due_date" validate:"required"`
+	ClientID       string          `json:"client_id" validate:"required"`
+	IssueDate      string          `json:"issue_date" validate:"required"`
+	PaymentAmount  decimal.Decimal `json:"payment_amount" validate:"required,min=1"`
+	PaymentDueDate string          `json:"payment_due_date" validate:"required"`
 }
 
 type InvoiceResponse struct {
 	ID             string              `json:"id"`
 	ClientID       string              `json:"client_id"`
 	IssueDate      time.Time           `json:"issue_date"`
-	PaymentAmount  int                 `json:"payment_amount"`
-	Fee            int                 `json:"fee"`
-	FeeRate        float64             `json:"fee_rate"`
-	Tax            int                 `json:"tax"`
-	TaxRate        float64             `json:"tax_rate"`
-	InvoiceAmount  int                 `json:"invoice_amount"`
+	PaymentAmount  decimal.Decimal     `json:"payment_amount"`
+	Fee            decimal.Decimal     `json:"fee"`
+	FeeRate        decimal.Decimal     `json:"fee_rate"`
+	Tax            decimal.Decimal     `json:"tax"`
+	TaxRate        decimal.Decimal     `json:"tax_rate"`
+	InvoiceAmount  decimal.Decimal     `json:"invoice_amount"`
 	PaymentDueDate time.Time           `json:"payment_due_date"`
 	Status         value.InvoiceStatus `json:"status"`
 	CreatedAt      time.Time           `json:"created_at"`

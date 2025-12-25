@@ -153,7 +153,7 @@ func TestE2E_LoginAndCreateInvoice(t *testing.T) {
 		invoiceReq := map[string]interface{}{
 			"client_id":        clientID,
 			"issue_date":       time.Now().Format(time.DateOnly),
-			"payment_amount":   100000,
+			"payment_amount":   "100000",
 			"payment_due_date": time.Now().AddDate(0, 1, 0).Format(time.DateOnly),
 		}
 		invoiceBody, _ := json.Marshal(invoiceReq)
@@ -177,7 +177,7 @@ func TestE2E_LoginAndCreateInvoice(t *testing.T) {
 		defer func() { _ = resp.Body.Close() }()
 
 		assert.NotEmpty(t, invoiceResp["id"])
-		assert.Equal(t, float64(100000), invoiceResp["payment_amount"])
+		assert.Equal(t, "100000", invoiceResp["payment_amount"])
 
 		// Step 3: 請求書一覧取得
 		req, _ = http.NewRequest(

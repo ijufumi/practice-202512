@@ -10,6 +10,7 @@ import (
 	repository "github.com/ijufumi/practice-202512/app/domain/repository/mocks"
 	"github.com/ijufumi/practice-202512/app/domain/value"
 	"github.com/ijufumi/practice-202512/app/util"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"gorm.io/driver/sqlite"
@@ -33,7 +34,7 @@ func TestInvoiceUsecase_CreateInvoice(t *testing.T) {
 
 		clientID := "01HQZXFG0PJ9K8QXW7YM1N2ZXC"
 		issueDate := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
-		paymentAmount := 100000
+		paymentAmount := decimal.NewFromInt(100000)
 		paymentDueDate := time.Date(2025, 2, 1, 0, 0, 0, 0, time.UTC)
 
 		user := &models.User{
@@ -44,16 +45,16 @@ func TestInvoiceUsecase_CreateInvoice(t *testing.T) {
 
 		mockInvoiceRepository.EXPECT().Create(mock.Anything, mock.MatchedBy(func(inv *models.Invoice) bool {
 			// 手数料と消費税の計算確認
-			expectedFee := int(float64(paymentAmount) * 0.04)                  // 4000
-			expectedTax := int(float64(expectedFee) * 0.10)                    // 400
-			expectedInvoiceAmount := paymentAmount + expectedFee + expectedTax // 104400
+			expectedFee := paymentAmount.Mul(decimal.NewFromFloat(0.04))             // 4000
+			expectedTax := expectedFee.Mul(decimal.NewFromFloat(0.10))               // 400
+			expectedInvoiceAmount := paymentAmount.Add(expectedFee).Add(expectedTax) // 104400
 
 			return inv.ClientID == clientID &&
 				inv.CompanyID == user.CompanyID &&
-				inv.PaymentAmount == paymentAmount &&
-				inv.Fee == expectedFee &&
-				inv.Tax == expectedTax &&
-				inv.InvoiceAmount == expectedInvoiceAmount &&
+				inv.PaymentAmount.Equal(paymentAmount) &&
+				inv.Fee.Equal(expectedFee) &&
+				inv.Tax.Equal(expectedTax) &&
+				inv.InvoiceAmount.Equal(expectedInvoiceAmount) &&
 				inv.Status == value.InvoiceStatusUnprocessed
 		})).Return(nil)
 
@@ -64,11 +65,11 @@ func TestInvoiceUsecase_CreateInvoice(t *testing.T) {
 		assert.NotNil(t, invoice)
 		assert.Equal(t, clientID, invoice.ClientID)
 		assert.Equal(t, paymentAmount, invoice.PaymentAmount)
-		assert.Equal(t, 4000, invoice.Fee)
-		assert.Equal(t, 0.04, invoice.FeeRate)
-		assert.Equal(t, 400, invoice.Tax)
-		assert.Equal(t, 0.10, invoice.TaxRate)
-		assert.Equal(t, 104400, invoice.InvoiceAmount)
+		assert.Equal(t, decimal.NewFromInt(4000), invoice.Fee)
+		assert.True(t, invoice.FeeRate.Equal(decimal.NewFromFloat(0.04)))
+		assert.Equal(t, decimal.NewFromInt(400), invoice.Tax)
+		assert.True(t, invoice.TaxRate.Equal(decimal.NewFromFloat(0.10)))
+		assert.Equal(t, decimal.NewFromInt(104400), invoice.InvoiceAmount)
 		assert.Equal(t, value.InvoiceStatusUnprocessed, invoice.Status)
 	})
 
@@ -79,7 +80,7 @@ func TestInvoiceUsecase_CreateInvoice(t *testing.T) {
 
 		clientID := "01HQZXFG0PJ9K8QXW7YM1N2ZXC"
 		issueDate := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
-		paymentAmount := 250000 // 250,000円
+		paymentAmount := decimal.NewFromInt(250000) // 250,000円
 		paymentDueDate := time.Date(2025, 2, 1, 0, 0, 0, 0, time.UTC)
 
 		user := &models.User{
@@ -88,22 +89,22 @@ func TestInvoiceUsecase_CreateInvoice(t *testing.T) {
 		}
 		mockUserRepository.EXPECT().FindByID(mock.Anything, user.ID).Return(user, nil)
 		mockInvoiceRepository.EXPECT().Create(mock.Anything, mock.MatchedBy(func(inv *models.Invoice) bool {
-			expectedFee := int(float64(paymentAmount) * 0.04)                  // 10000
-			expectedTax := int(float64(expectedFee) * 0.10)                    // 1000
-			expectedInvoiceAmount := paymentAmount + expectedFee + expectedTax // 261000
+			expectedFee := paymentAmount.Mul(decimal.NewFromFloat(0.04))             // 10000
+			expectedTax := expectedFee.Mul(decimal.NewFromFloat(0.10))               // 1000
+			expectedInvoiceAmount := paymentAmount.Add(expectedFee).Add(expectedTax) // 261000
 
-			return inv.Fee == expectedFee &&
-				inv.Tax == expectedTax &&
-				inv.InvoiceAmount == expectedInvoiceAmount
+			return inv.Fee.Equal(expectedFee) &&
+				inv.Tax.Equal(expectedTax) &&
+				inv.InvoiceAmount.Equal(expectedInvoiceAmount)
 		})).Return(nil)
 
 		usecase := NewInvoiceUsecase(mockInvoiceRepository, mockUserRepository)
 		invoice, err := usecase.CreateInvoice(ctx, clientID, issueDate, paymentAmount, paymentDueDate)
 
 		assert.NoError(t, err)
-		assert.Equal(t, 10000, invoice.Fee)
-		assert.Equal(t, 1000, invoice.Tax)
-		assert.Equal(t, 261000, invoice.InvoiceAmount)
+		assert.Equal(t, decimal.NewFromInt(10000), invoice.Fee)
+		assert.Equal(t, decimal.NewFromInt(1000), invoice.Tax)
+		assert.Equal(t, decimal.NewFromInt(261000), invoice.InvoiceAmount)
 	})
 
 	t.Run("リポジトリエラー", func(t *testing.T) {
@@ -113,7 +114,7 @@ func TestInvoiceUsecase_CreateInvoice(t *testing.T) {
 
 		clientID := "01HQZXFG0PJ9K8QXW7YM1N2ZXC"
 		issueDate := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
-		paymentAmount := 100000
+		paymentAmount := decimal.NewFromInt(100000)
 		paymentDueDate := time.Date(2025, 2, 1, 0, 0, 0, 0, time.UTC)
 
 		user := &models.User{
@@ -140,7 +141,7 @@ func TestInvoiceUsecase_CreateInvoice(t *testing.T) {
 
 		clientID := "01HQZXFG0PJ9K8QXW7YM1N2ZXC"
 		issueDate := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
-		paymentAmount := 100000
+		paymentAmount := decimal.NewFromInt(100000)
 		paymentDueDate := time.Date(2025, 2, 1, 0, 0, 0, 0, time.UTC)
 
 		usecase := NewInvoiceUsecase(mockInvoiceRepository, mockUserRepository)
@@ -167,13 +168,13 @@ func TestInvoiceUsecase_GetInvoicesByPaymentDueDateRange(t *testing.T) {
 			{
 				ID:             "01HQZXFG0PJ9K8QXW7YM1N2ZXD",
 				ClientID:       "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
-				PaymentAmount:  100000,
+				PaymentAmount:  decimal.NewFromInt(100000),
 				PaymentDueDate: time.Date(2025, 2, 1, 0, 0, 0, 0, time.UTC),
 			},
 			{
 				ID:             "01HQZXFG0PJ9K8QXW7YM1N2ZXE",
 				ClientID:       "01HQZXFG0PJ9K8QXW7YM1N2ZXC",
-				PaymentAmount:  200000,
+				PaymentAmount:  decimal.NewFromInt(200000),
 				PaymentDueDate: time.Date(2025, 3, 1, 0, 0, 0, 0, time.UTC),
 			},
 		}
