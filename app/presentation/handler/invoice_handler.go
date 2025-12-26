@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"time"
@@ -107,8 +108,11 @@ func parseOffset(offsetStr string) (int, error) {
 		return DefaultOffset, nil
 	}
 	offset, err := strconv.Atoi(offsetStr)
-	if err != nil || offset < 0 {
+	if err != nil {
 		return 0, err
+	}
+	if offset <= 0 {
+		return 0, errors.New("invalid limit parameter")
 	}
 
 	return offset, nil
@@ -120,8 +124,11 @@ func parseLimit(limitStr string) (int, error) {
 		return DefaultLimit, nil
 	}
 	limit, err := strconv.Atoi(limitStr)
-	if err != nil || limit <= 0 {
+	if err != nil {
 		return 0, err
+	}
+	if limit <= 0 {
+		return 0, errors.New("invalid limit parameter")
 	}
 
 	return limit, nil
