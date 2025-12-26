@@ -34,6 +34,7 @@ func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
 	}
+
 	return defaultValue
 }
 
@@ -43,5 +44,6 @@ func getDecimalEnv(key, defaultValue string) decimal.Decimal {
 	if err != nil {
 		dec, _ = decimal.NewFromString(defaultValue)
 	}
+
 	return dec
 }

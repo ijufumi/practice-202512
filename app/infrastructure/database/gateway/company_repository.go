@@ -22,6 +22,7 @@ func (r *companyRepository) Create(db *gorm.DB, company *models.Company) error {
 	company.ID = daoCompany.ID
 	company.CreatedAt = daoCompany.CreatedAt
 	company.UpdatedAt = daoCompany.UpdatedAt
+
 	return nil
 }
 
@@ -31,5 +32,6 @@ func (r *companyRepository) FindByID(db *gorm.DB, id string) (*models.Company, e
 		return nil, err
 	}
 	company := models.CompanyFromDAO(&daoCompany)
+
 	return company, nil
 }

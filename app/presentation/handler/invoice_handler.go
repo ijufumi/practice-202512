@@ -57,47 +57,25 @@ func (h *InvoiceHandler) CreateInvoice(c echo.Context) error {
 func (h *InvoiceHandler) GetInvoices(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	startDateStr := c.QueryParam("start_date")
-	endDateStr := c.QueryParam("end_date")
-	offsetStr := c.QueryParam("offset")
-	limitStr := c.QueryParam("limit")
-
-	var startDate, endDate *time.Time
-
-	if startDateStr != "" {
-		_startDate, err := time.Parse("2006-01-02", startDateStr)
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("Invalid start_date format. Use YYYY-MM-DD"))
-		}
-		startDate = &_startDate
+	// クエリパラメータのパース
+	startDate, err := parseOptionalDate(c.QueryParam("start_date"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.NewErrorResponse("Invalid start_date format. Use YYYY-MM-DD"))
 	}
 
-	if endDateStr != "" {
-		_endDate, err := time.Parse("2006-01-02", endDateStr)
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("Invalid end_date format. Use YYYY-MM-DD"))
-		}
-		endDate = &_endDate
+	endDate, err := parseOptionalDate(c.QueryParam("end_date"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.NewErrorResponse("Invalid end_date format. Use YYYY-MM-DD"))
 	}
 
-	// offset と limit のパース（デフォルト値: offset=0, limit=100）
-	offset := 0
-	limit := 100
-
-	if offsetStr != "" {
-		parsedOffset, err := strconv.Atoi(offsetStr)
-		if err != nil || parsedOffset < 0 {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("Invalid offset parameter"))
-		}
-		offset = parsedOffset
+	offset, err := parseOffset(c.QueryParam("offset"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.NewErrorResponse("Invalid offset parameter"))
 	}
 
-	if limitStr != "" {
-		parsedLimit, err := strconv.Atoi(limitStr)
-		if err != nil || parsedLimit <= 0 {
-			return c.JSON(http.StatusBadRequest, models.NewErrorResponse("Invalid limit parameter"))
-		}
-		limit = parsedLimit
+	limit, err := parseLimit(c.QueryParam("limit"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.NewErrorResponse("Invalid limit parameter"))
 	}
 
 	invoices, err := h.invoiceUsecase.GetInvoicesByPaymentDueDateRange(ctx, startDate, endDate, offset, limit)
@@ -108,4 +86,43 @@ func (h *InvoiceHandler) GetInvoices(c echo.Context) error {
 	responses := models.FromInvoiceDomainModels(invoices)
 
 	return c.JSON(http.StatusOK, responses)
+}
+
+// parseOptionalDate はオプショナルな日付文字列をパースします
+func parseOptionalDate(dateStr string) (*time.Time, error) {
+	if dateStr == "" {
+		return nil, nil
+	}
+	parsedDate, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		return nil, err
+	}
+
+	return &parsedDate, nil
+}
+
+// parseOffset はオフセット文字列をパースします（デフォルト: 0）
+func parseOffset(offsetStr string) (int, error) {
+	if offsetStr == "" {
+		return DefaultOffset, nil
+	}
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil || offset < 0 {
+		return 0, err
+	}
+
+	return offset, nil
+}
+
+// parseLimit はリミット文字列をパースします（デフォルト: 100）
+func parseLimit(limitStr string) (int, error) {
+	if limitStr == "" {
+		return DefaultLimit, nil
+	}
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		return 0, err
+	}
+
+	return limit, nil
 }

@@ -17,6 +17,7 @@ func (s *InvoiceStatus) String() string {
 
 func (s *InvoiceStatus) UnmarshalJSON(b []byte) error {
 	*s = InvoiceStatus(b)
+
 	return nil
 }
 

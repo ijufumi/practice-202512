@@ -10,5 +10,6 @@ import (
 // GenerateULID generates a new ULID string
 func GenerateULID() string {
 	entropy := ulid.Monotonic(rand.Reader, 0)
+
 	return ulid.MustNew(ulid.Timestamp(time.Now()), entropy).String()
 }

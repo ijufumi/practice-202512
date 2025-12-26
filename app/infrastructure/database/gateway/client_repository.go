@@ -22,6 +22,7 @@ func (r *clientRepository) Create(db *gorm.DB, client *models.Client) error {
 	client.ID = daoClient.ID
 	client.CreatedAt = daoClient.CreatedAt
 	client.UpdatedAt = daoClient.UpdatedAt
+
 	return nil
 }
 
@@ -31,5 +32,6 @@ func (r *clientRepository) FindByID(db *gorm.DB, id string) (*models.Client, err
 		return nil, err
 	}
 	client := models.ClientFromDAO(&daoClient)
+
 	return client, nil
 }

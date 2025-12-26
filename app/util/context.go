@@ -10,7 +10,8 @@ import (
 type contextKey string
 
 const (
-	dbContextKey contextKey = "db"
+	dbContextKey   contextKey = "db"
+	userContextKey contextKey = "user"
 )
 
 // SetDB sets gorm.DB instance to context
@@ -24,17 +25,19 @@ func GetDB(ctx context.Context) (*gorm.DB, error) {
 	if !ok || db == nil {
 		return nil, errors.New("database connection not found in context")
 	}
+
 	return db, nil
 }
 
 func SetUserID(ctx context.Context, userID string) context.Context {
-	return context.WithValue(ctx, "userID", userID)
+	return context.WithValue(ctx, userContextKey, userID)
 }
 
 func GetUserID(ctx context.Context) (string, error) {
-	userID, ok := ctx.Value("userID").(string)
+	userID, ok := ctx.Value(userContextKey).(string)
 	if !ok {
 		return "", errors.New("user ID not found in context")
 	}
+
 	return userID, nil
 }

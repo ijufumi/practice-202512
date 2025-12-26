@@ -92,6 +92,10 @@ func main() {
 		if err := invoiceRepository.Create(tx, invoice); err != nil {
 			return err
 		}
+
 		return nil
 	})
+	if err != nil {
+		log.Fatalf("Failed to create seed data: %v", err)
+	}
 }

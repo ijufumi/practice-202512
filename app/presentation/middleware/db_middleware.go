@@ -14,6 +14,7 @@ func DBMiddleware(db *gorm.DB) echo.MiddlewareFunc {
 			req := c.Request()
 			ctx := util.SetDB(req.Context(), db.WithContext(req.Context()))
 			c.SetRequest(req.WithContext(ctx))
+
 			return next(c)
 		}
 	}

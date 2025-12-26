@@ -1,10 +1,11 @@
 package gateway
 
 import (
+	"time"
+
 	"github.com/ijufumi/practice-202512/app/domain/models"
 	"github.com/ijufumi/practice-202512/app/domain/repository"
 	"github.com/ijufumi/practice-202512/app/infrastructure/database/entities"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -23,6 +24,7 @@ func (r *invoiceRepository) Create(db *gorm.DB, invoice *models.Invoice) error {
 	invoice.ID = daoInvoice.ID
 	invoice.CreatedAt = daoInvoice.CreatedAt
 	invoice.UpdatedAt = daoInvoice.UpdatedAt
+
 	return nil
 }
 
@@ -51,5 +53,6 @@ func (r *invoiceRepository) FindByPaymentDueDateRange(db *gorm.DB, startDate, en
 	for i, daoInvoice := range daoInvoices {
 		invoices[i] = models.InvoiceFromDAO(daoInvoice)
 	}
+
 	return invoices, nil
 }

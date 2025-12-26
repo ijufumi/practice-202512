@@ -28,5 +28,6 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	if u.ID == "" {
 		u.ID = util.GenerateULID()
 	}
+
 	return nil
 }

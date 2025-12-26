@@ -1,4 +1,4 @@
-.PHONY: up down restart build logs ps clean help init test test-unit test-e2e test-coverage test-unit-coverage
+.PHONY: up down restart build logs ps clean help init seed mock test test-e2e lint
 
 # .envファイルの初期化
 init:
@@ -64,6 +64,10 @@ test:
 # E2Eテスト実行
 test-e2e:
 	go test -v ./e2e/...
+
+# Lint実行
+lint:
+	docker run --rm -v ./:/app -w /app golangci/golangci-lint:v2.7.2 golangci-lint run
 
 # CI用ビルドコマンド
 ci-build:

@@ -17,7 +17,7 @@ func NewRouter(db *gorm.DB, cfg *config.Config, invoiceHandler *handler.InvoiceH
 	e.Validator = custommiddleware.NewCustomValidator()
 
 	// ミドルウェア
-	e.Use(middleware.Logger())
+	e.Use(middleware.RequestLogger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 	e.Use(custommiddleware.DBMiddleware(db))

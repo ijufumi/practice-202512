@@ -27,5 +27,6 @@ func (c *Company) BeforeCreate(tx *gorm.DB) error {
 	if c.ID == "" {
 		c.ID = util.GenerateULID()
 	}
+
 	return nil
 }

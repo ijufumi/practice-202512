@@ -54,5 +54,6 @@ func FromInvoiceDomainModels(invoices []*domainModel.Invoice) []*InvoiceResponse
 	for i, invoice := range invoices {
 		responses[i] = FromInvoiceDomainModel(invoice)
 	}
+
 	return responses
 }

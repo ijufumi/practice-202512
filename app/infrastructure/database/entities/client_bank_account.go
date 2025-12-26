@@ -29,5 +29,6 @@ func (c *ClientBankAccount) BeforeCreate(tx *gorm.DB) error {
 	if c.ID == "" {
 		c.ID = util.GenerateULID()
 	}
+
 	return nil
 }

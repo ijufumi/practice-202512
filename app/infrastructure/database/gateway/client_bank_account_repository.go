@@ -22,6 +22,7 @@ func (r *clientBankAccountRepository) Create(db *gorm.DB, account *models.Client
 	account.ID = daoAccount.ID
 	account.CreatedAt = daoAccount.CreatedAt
 	account.UpdatedAt = daoAccount.UpdatedAt
+
 	return nil
 }
 
@@ -31,5 +32,6 @@ func (r *clientBankAccountRepository) FindByID(db *gorm.DB, id string) (*models.
 		return nil, err
 	}
 	account := models.ClientBankAccountFromDAO(&daoAccount)
+
 	return account, nil
 }

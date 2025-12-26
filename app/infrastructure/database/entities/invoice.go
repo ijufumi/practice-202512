@@ -38,5 +38,6 @@ func (i *Invoice) BeforeCreate(tx *gorm.DB) error {
 	if i.ID == "" {
 		i.ID = util.GenerateULID()
 	}
+
 	return nil
 }

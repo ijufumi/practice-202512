@@ -39,6 +39,7 @@ func (u *authUsecase) Login(ctx context.Context, email, password string) (string
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return "", errors.New("invalid email or password")
 		}
+
 		return "", err
 	}
 

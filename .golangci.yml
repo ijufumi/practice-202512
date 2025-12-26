@@ -1,0 +1,72 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: all
+  # Disable specific linters.
+  disable:
+    - arangolint
+    - asasalint
+    - canonicalheader
+    - containedctx
+    - durationcheck
+    - depguard
+    - dupl
+    - exhaustruct
+    - err113
+    - forcetypeassert
+    - funcorder
+    - ginkgolinter
+    - gochecknoglobals
+    - gochecksumtype
+    - goconst
+    - gocritic
+    - godot
+    - gosmopolitan
+    - intrange
+    - ireturn
+    - lll
+    - loggercheck
+    - makezero
+    - mirror
+    - modernize
+    - musttag
+    - varnamelen
+    - nilerr
+    - nilnesserr
+    - nilnil
+    - noctx
+    - noinlineerr
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - perfsprint
+    - protogetter
+    - reassign
+    - recvcheck
+    - revive
+    - rowserrcheck
+    - sloglint
+    - spancheck
+    - tagalign
+    - tagliatelle
+    - testifylint
+    - testpackage
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - usetesting
+    - wastedassign
+    - wrapcheck
+    - wsl
+    - wsl_v5
+    - zerologlint
+    - embeddedstructfieldcheck
+  exclusions:
+    warn-unused: true
+    paths:
+      - _test\.go$
+      - tool/

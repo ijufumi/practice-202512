@@ -22,6 +22,7 @@ func (r *userRepository) Create(db *gorm.DB, user *models.User) error {
 	user.ID = daoUser.ID
 	user.CreatedAt = daoUser.CreatedAt
 	user.UpdatedAt = daoUser.UpdatedAt
+
 	return nil
 }
 
@@ -31,6 +32,7 @@ func (r *userRepository) FindByID(db *gorm.DB, id string) (*models.User, error) 
 		return nil, err
 	}
 	user := models.UserFromDAO(&daoUser)
+
 	return user, nil
 }
 
@@ -40,5 +42,6 @@ func (r *userRepository) FindByEmail(db *gorm.DB, email string) (*models.User, e
 		return nil, err
 	}
 	user := models.UserFromDAO(&daoUser)
+
 	return user, nil
 }
