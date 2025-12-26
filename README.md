@@ -199,8 +199,6 @@ JWT トークンが返却されれば成功です。
 | `make test`              | 全テスト実行                    |
 | `make test-unit`         | 単体テスト実行（e2e以外）            |
 | `make test-e2e`          | E2Eテスト実行                  |
-| `make test-coverage`     | カバレッジ付き全テスト実行             |
-| `make test-unit-coverage`| カバレッジ付き単体テスト実行            |
 
 ### その他
 
